@@ -11,6 +11,8 @@ CMFC_MenuDlg::CMFC_MenuDlg(CWnd* pParent /*=NULL*/)
     : CDialogEx(IDD_MFC_MENU_DIALOG, pParent)
 {
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+    if (m_hIcon == NULL)
+        m_hIcon = AfxGetApp()->LoadStandardIcon(IDI_APPLICATION);
 
     m_hIconNew   = NULL;
     m_hIconOpen  = NULL;

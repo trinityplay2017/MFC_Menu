@@ -1,0 +1,30 @@
+// Microsoft Visual C++ generated resource script.
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+#include "afxres.h"
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Dialog
+IDD_MFC_MENU_DIALOG DIALOGEX 0, 0, 320, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MFC Custom Menu Demo (CNewMenu)"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Show Custom Menu",IDC_BTN_SHOWMENU,90,70,140,24
+    LTEXT           "Click the button to display an owner-draw popup menu\nwith icons, separators, shortcuts and hover effects.",
+                    IDC_STATIC,20,20,280,40
+END
+
+/////////////////////////////////////////////////////////////////////////////
+// Icon (placeholder - VS will supply a default)
+IDR_MAINFRAME           ICON                    "res\\MFC_Menu.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+#ifdef APSTUDIO_INVOKED
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+#endif

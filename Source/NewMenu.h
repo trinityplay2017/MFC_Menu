@@ -2,6 +2,7 @@
 
 #include <afxwin.h>
 #include <string>
+#include <vector>
 
 // Item type enumeration
 enum ITEMTYPE
@@ -59,11 +60,13 @@ public:
     // CMenu overrides
     virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct);
     virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
-    virtual void DeleteItem(LPDELETEITEMSTRUCT lpDeleteItemStruct);
 
 protected:
     // Internal helper to append an owner-draw item
     BOOL AppendOwnerDrawItem(UINT nFlags, UINT_PTR nIDNewItem, StruItemInfo* pInfo);
+
+    // Free all allocated StruItemInfo
+    void FreeItemData();
 
     // Appearance
     COLORREF    m_clrBk;
@@ -82,4 +85,7 @@ protected:
 
     std::wstring m_strFontFaceName;
     BOOL        m_bHasIcon;
+
+    // Track allocated item data for cleanup
+    std::vector<StruItemInfo*> m_vecItemData;
 };

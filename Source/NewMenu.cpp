@@ -31,8 +31,17 @@ CNewMenu::CNewMenu()
 
 CNewMenu::~CNewMenu()
 {
-    // CMenu will call DeleteItem for remaining items when destroyed
+    FreeItemData();
     DestroyMenu();
+}
+
+void CNewMenu::FreeItemData()
+{
+    for (size_t i = 0; i < m_vecItemData.size(); ++i)
+    {
+        delete m_vecItemData[i];
+    }
+    m_vecItemData.clear();
 }
 
 // ------------------------------------------------------------
@@ -100,6 +109,7 @@ void CNewMenu::EnableIcons(BOOL bEnable)
 BOOL CNewMenu::AppendOwnerDrawItem(UINT nFlags, UINT_PTR nIDNewItem, StruItemInfo* pInfo)
 {
     nFlags |= MF_OWNERDRAW;
+    m_vecItemData.push_back(pInfo);   // track for cleanup
     return AppendMenu(nFlags, nIDNewItem, (LPCTSTR)pInfo);
 }
 
@@ -165,7 +175,6 @@ void CNewMenu::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
 // ------------------------------------------------------------
 void CNewMenu::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
-    CString strText;
     CDC* pDC = CDC::FromHandle(lpDrawItemStruct->hDC); // Gets the device handle to the menu item
     StruItemInfo* pStruItemInfo = (StruItemInfo*)lpDrawItemStruct->itemData;
     if (pStruItemInfo == NULL)
@@ -225,11 +234,14 @@ void CNewMenu::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
         }
 
         // Text font and size Settings
-        LOGFONT fontInfo;
-        pDC->GetCurrentFont()->GetLogFont(&fontInfo);
+        LOGFONT fontInfo = {0};
+        CFont* pCurrentFont = pDC->GetCurrentFont();
+        if (pCurrentFont)
+            pCurrentFont->GetLogFont(&fontInfo);
 
         fontInfo.lfHeight = -m_nFontSize;   // negative = character height
-        lstrcpy(fontInfo.lfFaceName, m_strFontFaceName.c_str());
+        wcsncpy_s(fontInfo.lfFaceName, LF_FACESIZE, m_strFontFaceName.c_str(), _TRUNCATE);
+
         CFont fontCh;
         fontCh.CreateFontIndirect(&fontInfo);
         CFont* pOldFont = pDC->SelectObject(&fontCh);
@@ -275,18 +287,4 @@ void CNewMenu::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
         pDC->SelectObject(pOldFont);
     }
-}
-
-// ------------------------------------------------------------
-// DeleteItem - free the StruItemInfo we allocated
-// ------------------------------------------------------------
-void CNewMenu::DeleteItem(LPDELETEITEMSTRUCT lpDeleteItemStruct)
-{
-    if (lpDeleteItemStruct->itemData != 0)
-    {
-        StruItemInfo* pInfo = (StruItemInfo*)lpDeleteItemStruct->itemData;
-        delete pInfo;
-        lpDeleteItemStruct->itemData = 0;
-    }
-    CMenu::DeleteItem(lpDeleteItemStruct);
 }
